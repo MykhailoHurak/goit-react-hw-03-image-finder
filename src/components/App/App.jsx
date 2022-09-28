@@ -1,25 +1,34 @@
 import { Component } from 'react';
 import Searchbar from '../Searchbar/Searchbar';
+import ImageGallery from 'components/ImageGallery';
 
 export default class App extends Component {
 
     state = {
         imageNameSubmit: '',
+        imagesFromAPI: [],
         status: 'idle', // 'pending', 'resolved', 'rejected'
+        pageNumber: 1,
+        error: null,
     };
 
-    componentDidUpdate(_, prevState) {
-        if (prevState.imageNameSubmit !== this.state.imageNameSubmit) {
+    async componentDidUpdate(_, prevState) {
+        if (prevState.imageNameSubmit !== this.state.imageNameSubmit || prevState.pageNumber !== this.state.pageNumber) {
+            try {
+                this.setState({ status: 'pending' });
+            
+                const fetchResponse = await fetch(`https://pixabay.com/api/?q=${this.state.imageNameSubmit}&page=${this.state.pageNumber}&key=30230359-119840990de5f9a29673d5f1e&image_type=photo&orientation=horizontal&per_page=12`);
+                const fetchResponseJson = await fetchResponse.json();
+                const imagesList = fetchResponseJson.hits.map(({ id, tags, webformatURL, largeImageURL }) => ({ id, tags, webformatURL, largeImageURL }));
 
-            this.setState({ status: 'pending' }); // loading: true, pokemon: null
-
-            setTimeout(() => {
-                fetch(`https://pixabay.com/api/?q=${this.state.imageNameSubmit}&page=1&key=30230359-119840990de5f9a29673d5f1e&image_type=photo&orientation=horizontal&per_page=12`)
-                    .then(response => response.json())
-                    .then(console.log)
-                    // .then(() => this.setState({ request, status: 'resolved' }))
-                    // .catch(error => this.setState({ error, status: 'rejected' }))
-            }, 3000);
+                if (imagesList.length === 0) {
+                    this.setState({ status: 'rejected' });
+                } else {
+                    this.setState((state) => ({ imagesFromAPI: [...state.imagesFromAPI, ...imagesList], status: 'resolved' }));
+                }
+            } catch (error) {
+                alert(error);
+            }
         }
     }
 
@@ -31,9 +40,17 @@ export default class App extends Component {
     render() {
         
         return (
-            <Searchbar
-                onSubmitSearchbar={this.handleSubmitSearchbar}
-            />
+            <>
+                <Searchbar
+                    onSubmitSearchbar={this.handleSubmitSearchbar}
+                />
+
+                {this.state.status === 'resolved' && (
+                    <ImageGallery
+                        imagesFromAPI={this.state.imagesFromAPI}
+                    />
+                )}
+            </>
         )
     }
 }

@@ -15,7 +15,7 @@ export default class Searchbar extends Component {
     event.preventDefault();
 
     if (this.state.imageNameInput.trim() === '') {
-      alert("Поле не повинно бути пустим");
+      alert("Поле не повинно бути порожнім");
       return;
     }
 
