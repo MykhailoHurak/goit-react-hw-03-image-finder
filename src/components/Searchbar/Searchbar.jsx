@@ -1,30 +1,51 @@
-import React from 'react';
-import css from '../Searchbar/Searchbar.module.css';
+import { Component } from 'react';
+import './Searchbar.css';
 
-class Searchbar extends React.Component {
-    // state = {};
+export default class Searchbar extends Component {
+
+    state = {
+        imageNameInput: ''
+    };
+
+    handleInput = event => {
+        this.setState({ imageNameInput: event.currentTarget.value.toLowerCase() });
+    };
+
+    handleSubmit = event => {
+    event.preventDefault();
+
+    if (this.state.imageNameInput.trim() === '') {
+      alert("Поле не повинно бути пустим");
+      return;
+    }
+
+    this.props.onSubmitSearchbar(this.state.imageNameInput);
+    this.setState({ imageNameInput: '' });
+  };
 
     render() {
         return (
-            // <div>Searchbar</div>
+            <header className='Searchbar'>
 
-            <header className={css.Searchbar}>
-                <form className={css.SearchForm}>
-                    <button type="submit" className={css.SearchForm_button}>
-                        <span className={css.SearchForm_button_label}>Search</span>
+                <form
+                    onSubmit={this.handleSubmit}
+                    className='SearchForm'>
+
+                    <button type="submit" className='SearchForm_button'>
+                        <span className='SearchForm_button_label'>Search</span>
                     </button>
                     
                     <input
-                        className={css.SearchForm_input}
+                        onChange={this.handleInput}
+                        value={this.state.imageNameInput}
+                        className='SearchForm_input'
                         type="text"
-                        autocomplete="off"
-                        autofocus
                         placeholder="Search images and photos"
                     />
+
                 </form>
+
             </header>
         )
     }
 }
-
-export default Searchbar;
