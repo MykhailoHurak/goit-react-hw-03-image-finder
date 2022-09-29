@@ -2,7 +2,7 @@ import React from 'react';
 import './ImageGallery.css';
 import ImageGalleryItem from '../ImageGalleryItem';
 
-const ImageGallery = ({ imagesFromAPI }) => {
+const ImageGallery = ({ imagesFromAPI, onImageClick }) => {
     return (
         <div>
             <ul className='ImageGallery'>
@@ -12,6 +12,7 @@ const ImageGallery = ({ imagesFromAPI }) => {
                         tags={tags}
                         webformatURL={webformatURL}
                         largeImageURL={largeImageURL}
+                        onImageClick={onImageClick}
                     />
                 ))}
             </ul>

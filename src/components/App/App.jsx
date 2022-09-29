@@ -1,15 +1,18 @@
 import { Component } from 'react';
 import Searchbar from '../Searchbar/Searchbar';
 import ImageGallery from 'components/ImageGallery';
+import Modal from 'components/Modal';
 
 export default class App extends Component {
 
     state = {
         imageNameSubmit: '',
         imagesFromAPI: [],
+        largeImage: '',
         status: 'idle', // 'pending', 'resolved', 'rejected'
         pageNumber: 1,
         error: null,
+        showModal: false,
     };
 
     async componentDidUpdate(_, prevState) {
@@ -37,6 +40,17 @@ export default class App extends Component {
         this.setState({ imageNameSubmit: imageNameSubmit });
     };
 
+    handleClickGalleryItem = img => {
+        this.setState({
+            largeImage: img,
+            showModal: true,
+        });
+    };
+
+    toggleModal = () => {
+        this.setState({ showModal: !this.state.showModal, largeImage: '' })
+    };
+
     render() {
         
         return (
@@ -48,7 +62,13 @@ export default class App extends Component {
                 {this.state.status === 'resolved' && (
                     <ImageGallery
                         imagesFromAPI={this.state.imagesFromAPI}
+                        onImageClick={this.handleClickGalleryItem}
                     />
+                )}
+                    {this.state.showModal && (
+                    <Modal onCloseModal={this.toggleModal}>
+                        <img src={this.state.largeImage} alt="" />
+                    </Modal>
                 )}
             </>
         )
