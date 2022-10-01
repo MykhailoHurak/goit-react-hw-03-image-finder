@@ -2,6 +2,7 @@ import { Component } from 'react';
 import Searchbar from '../Searchbar/Searchbar';
 import ImageGallery from 'components/ImageGallery';
 import Modal from 'components/Modal';
+import Loader from 'components/Loader';
 
 export default class App extends Component {
 
@@ -27,7 +28,8 @@ export default class App extends Component {
                 if (imagesList.length === 0) {
                     this.setState({ status: 'rejected' });
                 } else {
-                    this.setState((state) => ({ imagesFromAPI: [...state.imagesFromAPI, ...imagesList], status: 'resolved' }));
+                    console.log([...this.state.imagesFromAPI])
+                    this.setState((state) => ({ imagesFromAPI: [...imagesList], status: 'resolved' }));
                 }
             } catch (error) {
                 alert(error);
@@ -70,6 +72,7 @@ export default class App extends Component {
                         <img src={this.state.largeImage} alt="" />
                     </Modal>
                 )}
+                {this.state.status === 'pending' && <Loader />}
             </>
         )
     }
