@@ -9,7 +9,7 @@ export default function ButtonLoadMore({ onClickButtonLoadMore, onStatusButtonLo
                 type="button"
                 onClick={onClickButtonLoadMore}
             >
-                {onStatusButtonLoadMore ? 'Loadind...' : 'Load more'}
+                {onStatusButtonLoadMore ? 'Loading...' : 'Load more'}
             </button>
         </div>
     );
