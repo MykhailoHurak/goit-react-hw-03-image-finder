@@ -1,8 +1,9 @@
 import React from 'react';
-import './ImageGallery.css';
+import PropTypes from 'prop-types';
 import ImageGalleryItem from '../ImageGalleryItem';
+import './ImageGallery.css';
 
-const ImageGallery = ({ imagesFromAPI, onImageClick }) => {
+export default function ImageGallery ({ imagesFromAPI, onImageClick }) {
     return (
         <div>
             <ul className='ImageGallery'>
@@ -20,4 +21,7 @@ const ImageGallery = ({ imagesFromAPI, onImageClick }) => {
     );
 };
 
-export default ImageGallery;
+ImageGallery.prototype = {
+    imagesFromAPI: PropTypes.arrayOf(PropTypes.shape({})),
+    onImageClick: PropTypes.func.isRequired,
+}

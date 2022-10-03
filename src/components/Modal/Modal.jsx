@@ -4,7 +4,7 @@ import './Modal.css';
 
 const rootModal = document.querySelector('#root-modal');
 
-class Modal extends Component {
+export default class Modal extends Component {
 
     componentDidMount() {
         console.log('Modal componentDidMount');
@@ -23,9 +23,6 @@ class Modal extends Component {
     };
 
     handleCloseModalBackdrop = event => {
-        console.log('Клікнули в Бекдроп');
-        console.log('event.target', event.target);
-        console.log('event.currentTarget', event.currentTarget);
         if (event.currentTarget === event.target) {
             this.props.onCloseModal();
         }
@@ -43,5 +40,3 @@ class Modal extends Component {
         );
     };
 };
-
-export default Modal;

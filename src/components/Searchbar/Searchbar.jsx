@@ -1,4 +1,5 @@
 import { Component } from 'react';
+import { VscSearch } from 'react-icons/vsc';
 import './Searchbar.css';
 
 export default class Searchbar extends Component {
@@ -12,16 +13,16 @@ export default class Searchbar extends Component {
     };
 
     handleSubmit = event => {
-    event.preventDefault();
+        event.preventDefault();
 
-    if (this.state.imageNameInput.trim() === '') {
-      alert("Поле не повинно бути порожнім");
-      return;
-    }
+        if (this.state.imageNameInput.trim() === '') {
+            alert("The field must not be empty");
+            return;
+        }
 
-    this.props.onSubmitSearchbar(this.state.imageNameInput);
-    this.setState({ imageNameInput: '' });
-  };
+        this.props.onSubmitSearchbar(this.state.imageNameInput);
+        this.setState({ imageNameInput: '' });
+    };
 
     render() {
         return (
@@ -32,7 +33,7 @@ export default class Searchbar extends Component {
                     className='SearchForm'>
 
                     <button type="submit" className='SearchForm_button'>
-                        <span className='SearchForm_button_label'>Search</span>
+                        <VscSearch size="24" className='SearchForm__VscSearch' />
                     </button>
                     
                     <input
@@ -42,10 +43,9 @@ export default class Searchbar extends Component {
                         type="text"
                         placeholder="Search images and photos"
                     />
-
                 </form>
 
             </header>
-        )
-    }
-}
+        );
+    };
+};

@@ -1,6 +1,7 @@
+import PropTypes from 'prop-types';
 import './ImageGalleryItem.css';
 
-const ImageGalleryItem = ({ tags, webformatURL, largeImageURL, onImageClick }) => {
+export default function ImageGalleryItem ({ tags, webformatURL, largeImageURL, onImageClick }) {
     return (
         <li>
             <img
@@ -13,4 +14,9 @@ const ImageGalleryItem = ({ tags, webformatURL, largeImageURL, onImageClick }) =
     );
 };
 
-export default ImageGalleryItem;
+ImageGalleryItem.propTypes = {
+    largeImageURL: PropTypes.string.isRequired,
+    tags: PropTypes.string.isRequired,
+    webformatURL: PropTypes.string.isRequired,
+    onImageClick: PropTypes.func.isRequired,
+};

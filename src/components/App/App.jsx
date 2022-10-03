@@ -13,30 +13,29 @@ export default class App extends Component {
         largeImage: '',
         status: 'idle', // 'pending', 'resolved', 'rejected'
         pageNumber: 1,
-        error: null,
         showModal: false,
+        isLoadMore: false,
     };
 
     async componentDidUpdate(_, prevState) {
         if (prevState.imageNameSubmit !== this.state.imageNameSubmit || prevState.pageNumber !== this.state.pageNumber) {
             try {
-                // this.setState({ status: 'pending' });
+                if (this.state.pageNumber === 1) {
+                    this.setState({ status: 'pending' });
+                }
             
                 const fetchResponse = await fetch(`https://pixabay.com/api/?q=${this.state.imageNameSubmit}&page=${this.state.pageNumber}&key=30230359-119840990de5f9a29673d5f1e&image_type=photo&orientation=horizontal&per_page=12`);
-                const fetchResponseJson = await fetchResponse.json();
-                const imagesList = fetchResponseJson.hits.map(({ id, tags, webformatURL, largeImageURL }) => ({ id, tags, webformatURL, largeImageURL }));
+                const imagesData = await fetchResponse.json();
+                const imagesList = imagesData.hits.map(({ id, tags, webformatURL, largeImageURL }) => ({ id, tags, webformatURL, largeImageURL }));
 
                 if (imagesList.length === 0) {
                     this.setState({ status: 'rejected' });
                 } else {
-                    console.log([...this.state.imagesFromAPI])
-                    console.log('this.state.imagesFromAPI', this.state.imagesFromAPI)
-                    console.log('imagesList', imagesList)
-                
                     this.setState(
                         {
                             imagesFromAPI: [...this.state.imagesFromAPI, ...imagesList],
-                            status: 'resolved'
+                            status: 'resolved',
+                            isLoadMore: false,
                         });
                     
                 }
@@ -46,16 +45,12 @@ export default class App extends Component {
         }
     }
 
-    handlerButtonLoadMore = () => {
-        console.log('handlerButtonLoadMore');
-        this.setState(prevState => ({
-            pageNumber: prevState.pageNumber + 1
-        }));
-    }
-
     handleSubmitSearchbar = (imageNameSubmit) => {
-        console.log(imageNameSubmit);
-        this.setState({ imageNameSubmit: imageNameSubmit });
+        this.setState({
+            imageNameSubmit: imageNameSubmit,
+            pageNumber: 1,
+            imagesFromAPI: [],
+        });
     };
 
     handleClickGalleryItem = img => {
@@ -66,60 +61,86 @@ export default class App extends Component {
     };
 
     toggleModal = () => {
-        this.setState({ showModal: !this.state.showModal, largeImage: '' })
+        this.setState({
+            showModal: !this.state.showModal,
+            largeImage: ''
+        })
     };
+
+    handleButtonLoadMore = () => {
+        this.setState(prevState => ({
+            pageNumber: prevState.pageNumber + 1,
+            isLoadMore: true,
+        }));
+    }
 
     render() {
         
+        const {
+            handleSubmitSearchbar,
+            handleClickGalleryItem,
+            handleButtonLoadMore,
+            toggleModal
+        } = this;
+
+        const { 
+            status,
+            imagesFromAPI,
+            isLoadMore,
+            showModal,
+            largeImage
+        } = this.state;
+
         return (
             <>
                 <Searchbar
-                    onSubmitSearchbar={this.handleSubmitSearchbar}
+                    onSubmitSearchbar={handleSubmitSearchbar}
                 />
 
-                {this.state.status === 'resolved' && (
+                {status === 'resolved' && (
                     <ImageGallery
-                        imagesFromAPI={this.state.imagesFromAPI}
-                        onImageClick={this.handleClickGalleryItem}
+                        imagesFromAPI={imagesFromAPI}
+                        onImageClick={handleClickGalleryItem}
                     />
                 )}
                 
-                {this.state.status === 'resolved' && (
+                {status === 'resolved' && (
                     <ButtonLoadMore
-                        loadMore={this.handlerButtonLoadMore}
+                        onClickButtonLoadMore={handleButtonLoadMore}
+                        onStatusButtonLoadMore={isLoadMore}
                     />
                 )}
 
-                {this.state.showModal && (
-                    <Modal onCloseModal={this.toggleModal}>
-                        <img src={this.state.largeImage} alt="" />
+                {showModal && (
+                    <Modal onCloseModal={toggleModal}>
+                        <img src={largeImage} alt="" />
                     </Modal>
                 )}
 
-                {this.state.status === 'idle' && (
+                {status === 'idle' && (
                     <h1
                         style={{
                             textAlign: "center",
-                            color: "orange",
+                            color: "orangered",
                         }}
                     >
-                        Sorry, there are not images 😢 Please, enter photos name
+                        Please, enter images or photos name
                     </h1>
                 )}
+                
+                {status === 'pending' && <Loader />}
 
-                {this.state.status === 'pending' && <Loader />}
-
-                {this.state.status === 'rejected' && (
+                {status === 'rejected' && (
                     <h1
                         style={{
                             textAlign: "center",
-                            color: "orange",
+                            color: "orangered",
                         }}
                     >
                         ❌ Oops... We did not find a picture
                     </h1>
-                )}
+                )};
             </>
-        )
-    }
-}
+        );
+    };
+};

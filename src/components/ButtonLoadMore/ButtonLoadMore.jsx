@@ -1,17 +1,21 @@
+import PropTypes from 'prop-types';
 import './ButtonLoadMore.css';
 
-function ButtonLoadMore({ loadMore }) {
+export default function ButtonLoadMore({ onClickButtonLoadMore, onStatusButtonLoadMore }) {
     return (
         <div className='ButtonLoadMore__Box'>
             <button
                 className='ButtonLoadMore'
                 type="button"
-                onClick={loadMore}
+                onClick={onClickButtonLoadMore}
             >
-                Load more
+                {onStatusButtonLoadMore ? 'Loadind...' : 'Load more'}
             </button>
         </div>
-    )
+    );
 };
 
-export default ButtonLoadMore;
+ButtonLoadMore.propTypes = {
+    onStatusButtonLoadMore: PropTypes.bool.isRequired,
+    onClickButtonLoadMore: PropTypes.func,
+};
